@@ -1,7 +1,7 @@
 import pandas as pd
 
 def get_data():
-    db = pd.read_csv('C:\\Ashu\\Python\\General\\Zip_Codes\\data\\zipcodes.csv')
+    db = pd.read_csv('data\\zipcodes.csv')
     db.head()
 
     df = db[['ZIP', 'CITY', 'STATE', 'COUNTY']]
