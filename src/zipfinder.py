@@ -1,26 +1,21 @@
 import pandas as pd
+#import time
 
 def get_data():
     db = pd.read_csv('data\\zipcodes.csv')
-    db.head()
 
     df = db[['ZIP', 'CITY', 'STATE', 'COUNTY']]
-    df.head(7)
 
-    args = input('Query the database by entering a command, or type \"-h\" for a list of commands or \"-e\" to exit\nquery: ')
-    arglist = args.split()
+    data = pd.read_csv('data\\zipcodeset.csv')
     
-    if arglist[0] == '-h' or arglist[0] == '-e':
-        arglist.append('NULL')
-    elif arglist[0] == '-z':
-        arglist[1] = str(arglist[1])
+    test_data = data[['COMMAND', 'ZIPCODE']]
 
-    if '\'' in arglist[1]:
-        arglist[1] = arglist[1].replace('\'', ';')
-    
-    while len(arglist) != 2:
-        args = input('Sorry. Invalid request.\nQuery the database by entering a command, or type \"-h\" for a list of commands or \"-e\" to exit\nquery: ')
+    for n in range(len(data)):
+        #start_time = time.time()
+        args = '{0} {1}'.format(test_data.COMMAND[n], str(test_data.ZIPCODE[n]))
+        # args = input('Query the database by entering a command, or type \"-h\" for a list of commands or \"-e\" to exit\nquery: ')
         arglist = args.split()
+        
         if arglist[0] == '-h' or arglist[0] == '-e':
             arglist.append('NULL')
         elif arglist[0] == '-z':
@@ -28,13 +23,26 @@ def get_data():
 
         if '\'' in arglist[1]:
             arglist[1] = arglist[1].replace('\'', ';')
+    
+        while len(arglist) != 2:
+            args = input('Sorry. Invalid request.\nQuery the database by entering a command, or type \"-h\" for a list of commands or \"-e\" to exit\nquery: ')
+            arglist = args.split()
+            if arglist[0] == '-h' or arglist[0] == '-e':
+                arglist.append('NULL')
+            elif arglist[0] == '-z':
+                arglist[1] = str(arglist[1])
 
-    arglist[1] = arglist[1].upper()
+            if '\'' in arglist[1]:
+                arglist[1] = arglist[1].replace('\'', ';')
 
-    console(args, arglist, df)
+        arglist[1] = arglist[1].upper()
+
+        console(args, arglist, df)
+        #print(time.time() - start_time)
+    exit()
 
 def console(args, arglist, df):
-    while '-e' not in args:
+    if '-e' not in args:
         if len(arglist) == 2:
             if arglist[0] == '-ci':
                 print(find_city(df, arglist))
@@ -62,9 +70,6 @@ def console(args, arglist, df):
             print('-e \t\t\t Exits program')
             print('-s \t <state> \t Returns \"<city>, <county>, <zip>\" of the corresponding state')
             print('-z \t <zip> \t\t Returns \"<city>, <county>, <state>\" of the corresponding zip')
-        
-        get_data()
-    exit()
 
 def find_city(df, arglist):
     ret_val = ''
@@ -91,7 +96,10 @@ def find_zip(df, arglist):
     ret_val = ''
     for i in range(len(df)):
         if str(df.ZIP[i]) == arglist[1]:
-            ret_val += '{0}, {1}, {2}\n'.format(df.CITY[i], df.COUNTY[i], df.STATE[i])
+            if len(str(df.ZIP[i])) == 4:
+                ret_val += '{0}, {1}, {2}, 0{3}\n'.format(df.CITY[i], df.COUNTY[i], df.STATE[i], df.ZIP[i])
+            else:
+                ret_val += '{0}, {1}, {2}, {3}\n'.format(df.CITY[i], df.COUNTY[i], df.STATE[i], df.ZIP[i])
     return ret_val
 
 if __name__ == '__main__':
