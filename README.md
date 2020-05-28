@@ -5,7 +5,7 @@ A program that indexes a list of zip codes, cities, counties, states, etc.
 <br>
 REQUIREMENTS:
 <br>
-Python 3.x, Windows/MacOS/Linux, Command Line Interface (CLI)
+Python 3.x, Windows/MacOS/Linux, Command Line (CMD, bash, etc.)
 <br>
 <br>
 INSTRUCTIONS:
